@@ -20,4 +20,22 @@ public class CienteServiceImp implements IClientService{
     public List<Client> findAll() {
         return (List<Client>) iClientDao.findAll();
     }
+
+    @Override
+    @Transactional
+    public Client save(Client client) {
+        return iClientDao.save(client);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        iClientDao.deleteById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Client findById(Long id) {
+        return iClientDao.findById(id).orElse(null);
+    }
 }
