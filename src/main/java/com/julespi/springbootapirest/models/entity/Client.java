@@ -35,5 +35,8 @@ public class Client implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date created;
 
-
+    @PrePersist
+    public void prePersist(){
+        this.setCreated(new Date());
+    }
 }
