@@ -32,5 +32,19 @@ public class ClientRestController {
         return clientService.save(client);
     }
 
+    @PutMapping("/clients/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Client update(@RequestBody Client client, @PathVariable Long id){
+        Client actualClient = clientService.findById(id);
+        actualClient.setName(client.getName());
+        actualClient.setLastName(client.getLastName());
+        actualClient.setEmail(client.getEmail());
+        return clientService.save(actualClient);
+    }
 
+    @DeleteMapping("/clients/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id){
+        clientService.delete(id);
+    }
 }
