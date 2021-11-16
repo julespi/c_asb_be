@@ -37,7 +37,7 @@ public class ClientRestController {
     public Client update(@RequestBody Client client, @PathVariable Long id){
         Client actualClient = clientService.findById(id);
         actualClient.setName(client.getName());
-        actualClient.setLastName(client.getLastName());
+        actualClient.setLast_name(client.getLast_name());
         actualClient.setEmail(client.getEmail());
         return clientService.save(actualClient);
     }

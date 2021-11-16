@@ -24,7 +24,7 @@ public class Client implements Serializable {
     @Getter
     @Setter
     @Column(name = "last_name")
-    private String lastName;
+    private String last_name;
 
     @Getter
     @Setter
