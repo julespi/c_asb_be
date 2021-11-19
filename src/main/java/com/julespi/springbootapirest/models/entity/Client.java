@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name="clients")
+@Table(name = "clients")
 public class Client implements Serializable {
 
     @Getter
@@ -19,15 +19,17 @@ public class Client implements Serializable {
 
     @Getter
     @Setter
+    @Column(nullable = false)
     private String name;
 
     @Getter
     @Setter
-    @Column(name = "last_name")
+    @Column(name = "last_name", nullable = false)
     private String last_name;
 
     @Getter
     @Setter
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Getter
@@ -36,7 +38,7 @@ public class Client implements Serializable {
     private Date created;
 
     @PrePersist
-    public void prePersist(){
+    public void prePersist() {
         this.setCreated(new Date());
     }
 }
