@@ -60,7 +60,6 @@ public class ClientRestController {
     }
 
     @PutMapping("/clients/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> update(@RequestBody Client client, @PathVariable Long id) {
         Client actualClient = clientService.findById(id);
         Client updatedClient = null;
@@ -85,11 +84,10 @@ public class ClientRestController {
 
         response.put("message", "Client has successfully been updated");
         response.put("client", updatedClient);
-        return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
+        return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/clients/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> delete(@PathVariable Long id) {
         Map<String, Object> response = new HashMap<>();
         try {
@@ -100,6 +98,6 @@ public class ClientRestController {
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         response.put("message", "Client has successfully been deleted");
-        return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
+        return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NO_CONTENT);
     }
 }
