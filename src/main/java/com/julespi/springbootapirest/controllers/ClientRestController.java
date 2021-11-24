@@ -21,8 +21,11 @@ public class ClientRestController {
     private IClientService clientService;
 
     @GetMapping("/clients")
-    public List<Client> index() {
-        return clientService.findAll();
+    public ResponseEntity<?> index() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Exist");
+        response.put("payload", clientService.findAll());
+        return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
     }
 
     @GetMapping("/clients/{id}")
@@ -33,14 +36,17 @@ public class ClientRestController {
             client = clientService.findById(id);
         }catch (DataAccessException e){
             response.put("message", "Error while querying database.");
-            response.put("error",e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+            response.put("payload",e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         if (client == null) {
             response.put("message", "Client with id: ".concat(id.toString()).concat(" does not exist."));
+            response.put("payload","");
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<Client>(client, HttpStatus.OK);
+        response.put("message", "Exist");
+        response.put("payload", client);
+        return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
     }
 
     @PostMapping("/clients")
@@ -51,11 +57,11 @@ public class ClientRestController {
             newClient = clientService.save(client);
         }catch (DataAccessException e){
             response.put("message", "Error while inserting in database.");
-            response.put("error",e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+            response.put("payload",e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         response.put("message", "Client has successfully been created");
-        response.put("client", newClient);
+        response.put("payload", newClient);
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
     }
 
@@ -67,6 +73,7 @@ public class ClientRestController {
 
         if (actualClient == null) {
             response.put("message", "Could not edit. Client with id: ".concat(id.toString()).concat(" does not exist."));
+            response.put("payload", "");
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
         }
         try {
@@ -78,12 +85,11 @@ public class ClientRestController {
             updatedClient = clientService.save(actualClient);
         }catch (DataAccessException e){
             response.put("message", "Error while updating client in database.");
-            response.put("error",e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+            response.put("payload",e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
         response.put("message", "Client has successfully been updated");
-        response.put("client", updatedClient);
+        response.put("payload", updatedClient);
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
     }
 
@@ -94,10 +100,11 @@ public class ClientRestController {
             clientService.delete(id);
         }catch (DataAccessException e){
             response.put("message", "Error while deleting client in database.");
-            response.put("error",e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+            response.put("payload",e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         response.put("message", "Client has successfully been deleted");
+        response.put("payload", "");
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NO_CONTENT);
     }
 }
