@@ -6,11 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
@@ -50,9 +55,28 @@ public class ClientRestController {
     }
 
     @PostMapping("/clients")
-    public ResponseEntity<?> create(@RequestBody Client client) {
+    public ResponseEntity<?> create(@Valid @RequestBody Client client, BindingResult result) {
         Client newClient = null;
         Map<String, Object> response = new HashMap<>();
+
+        if(result.hasErrors()){
+
+            // como lista de strings
+            /*List<String> errors = new ArrayList<>();
+            for(FieldError err: result.getFieldErrors()){
+                errors.add("The field '"+err.getField()+"' "+err.getDefaultMessage());
+            }*/
+            //como stream
+            List<String> errors = result.getFieldErrors()
+                    .stream()
+                    .map(err -> "The field '"+err.getField()+"' "+err.getDefaultMessage())
+                    .collect(Collectors.toList());
+
+            response.put("message", "Error while validating.");
+            response.put("payload",errors);
+            return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+        }
+
         try {
             newClient = clientService.save(client);
         }catch (DataAccessException e){
@@ -66,10 +90,28 @@ public class ClientRestController {
     }
 
     @PutMapping("/clients/{id}")
-    public ResponseEntity<?> update(@RequestBody Client client, @PathVariable Long id) {
+    public ResponseEntity<?> update(@Valid @RequestBody Client client, BindingResult result, @PathVariable Long id) {
         Client actualClient = clientService.findById(id);
         Client updatedClient = null;
         Map<String, Object> response = new HashMap<>();
+
+        if(result.hasErrors()){
+
+            // como lista de strings
+            /*List<String> errors = new ArrayList<>();
+            for(FieldError err: result.getFieldErrors()){
+                errors.add("The field '"+err.getField()+"' "+err.getDefaultMessage());
+            }*/
+            //como stream
+            List<String> errors = result.getFieldErrors()
+                    .stream()
+                    .map(err -> "The field '"+err.getField()+"' "+err.getDefaultMessage())
+                    .collect(Collectors.toList());
+
+            response.put("message", "Error while validating.");
+            response.put("payload",errors);
+            return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+        }
 
         if (actualClient == null) {
             response.put("message", "Could not edit. Client with id: ".concat(id.toString()).concat(" does not exist."));
