@@ -3,6 +3,7 @@ package com.julespi.springbootapirest.controllers;
 import com.julespi.springbootapirest.models.entity.Client;
 import com.julespi.springbootapirest.models.services.IClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
