@@ -3,6 +3,8 @@ package com.julespi.springbootapirest.models.services;
 import com.julespi.springbootapirest.models.dao.IClientDao;
 import com.julespi.springbootapirest.models.entity.Client;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,12 @@ public class CienteServiceImp implements IClientService{
     @Transactional(readOnly = true)
     public List<Client> findAll() {
         return (List<Client>) iClientDao.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Client> findAll(Pageable pageable) {
+        return iClientDao.findAll(pageable);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.julespi.springbootapirest.models.services.IClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -31,6 +32,14 @@ public class ClientRestController {
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Exist");
         response.put("payload", clientService.findAll());
+        return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/clients/page/{page}")
+    public ResponseEntity<?> index(@PathVariable Integer page) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Exist");
+        response.put("payload", clientService.findAll(PageRequest.of(page,4)));
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
     }
 
