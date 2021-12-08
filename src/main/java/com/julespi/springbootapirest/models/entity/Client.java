@@ -47,4 +47,8 @@ public class Client implements Serializable {
     @Temporal(TemporalType.DATE)
     @NotNull
     private Date created;
+
+    @Getter
+    @Setter
+    private String profile_picture;
 }
