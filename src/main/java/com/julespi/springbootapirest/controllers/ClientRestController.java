@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -152,6 +153,15 @@ public class ClientRestController {
     public ResponseEntity<Map<String, Object>> delete(@PathVariable Long id) {
         Map<String, Object> response = new HashMap<>();
         try {
+            Client currentClient = clientService.findById(id);
+            String oldFileName = currentClient.getProfile_picture();
+            if(oldFileName != null && oldFileName.length() > 0){
+                Path oldFilePath = Paths.get("upload").resolve(oldFileName).toAbsolutePath();
+                File oldFile = oldFilePath.toFile();
+                if(oldFile.exists() && oldFile.canRead()){
+                    oldFile.delete();
+                }
+            }
             clientService.delete(id);
         } catch (DataAccessException e) {
             response.put("message", "Error while deleting client in database.");
@@ -176,6 +186,14 @@ public class ClientRestController {
                 response.put("message", "Error while uploading file.");
                 response.put("payload", e.getMessage().concat(": ").concat(e.getCause().getMessage()));
                 return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            String oldFileName = currentClient.getProfile_picture();
+            if(oldFileName != null && oldFileName.length() > 0){
+                Path oldFilePath = Paths.get("upload").resolve(oldFileName).toAbsolutePath();
+                File oldFile = oldFilePath.toFile();
+                if(oldFile.exists() && oldFile.canRead()){
+                    oldFile.delete();
+                }
             }
             currentClient.setProfile_picture(fileName);
             clientService.save(currentClient);
